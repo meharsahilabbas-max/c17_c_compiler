@@ -40,7 +40,7 @@ static char *object_path(const char *source, size_t index) {
 }
 
 static int compile_assembly(const char *source, const char *assembly, int argc, char **argv) {
-    char **core_argv = calloc((size_t)argc + 4, sizeof(*core_argv));
+    char **core_argv = calloc((size_t)argc + 5, sizeof(*core_argv));
     if (!core_argv) return 1;
     int count = 0;
     core_argv[count++] = "mycc-core"; core_argv[count++] = "-S";
