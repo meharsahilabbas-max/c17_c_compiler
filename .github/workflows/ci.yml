@@ -1,0 +1,25 @@
+name: mycc CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DMYCC_ENABLE_COVERAGE=OFF
+      - name: Build
+        run: cmake --build build --parallel
+      - name: Unit and integration tests
+        run: ctest --test-dir build --output-on-failure
+      - name: Assembly smoke test
+        run: ./build/mycc -S examples/factorial.c -o /tmp/factorial.s
+      - name: Sanitizer configure
+        run: cmake -S . -B build-sanitize -G Ninja -DCMAKE_BUILD_TYPE=Debug -DMYCC_ENABLE_SANITIZERS=ON
+      - name: Sanitizer build
+        run: cmake --build build-sanitize --parallel
+      - name: Sanitizer tests
+        run: ctest --test-dir build-sanitize --output-on-failure
